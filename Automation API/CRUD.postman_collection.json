@@ -252,7 +252,7 @@
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "Put of an Object",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -276,6 +276,76 @@
 					"path": [
 						"objects",
 						"ff80818191fb642f0191fb932be5013d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Single Object Copy 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test to validate the response status code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test to verify that the response contains the correct object properties\r",
+							"pm.test(\"Response contains the correct object properties\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Expected values (match the POST request body)\r",
+							"    var expectedName = \"Apple example put\";\r",
+							"    var expectedYear = 2019;\r",
+							"    var expectedPrice = 1849.99;\r",
+							"    var expectedCPUModel = \"Intel Core i9\";\r",
+							"    var expectedHardDiskSize = \"1 TB\";\r",
+							"\r",
+							"    // Validate the object properties\r",
+							"    pm.expect(jsonData.name).to.eql(expectedName);\r",
+							"    pm.expect(jsonData.data.year).to.eql(expectedYear);\r",
+							"    pm.expect(jsonData.data.price).to.eql(expectedPrice);\r",
+							"    pm.expect(jsonData.data[\"CPU model\"]).to.eql(expectedCPUModel);\r",
+							"    pm.expect(jsonData.data[\"Hard disk size\"]).to.eql(expectedHardDiskSize);\r",
+							"});\r",
+							"\r",
+							"// Test to ensure the ID matches the created object\r",
+							"pm.test(\"The retrieved object ID matches the saved objectId\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var objectId = pm.environment.get(\"objectId\");\r",
+							"\r",
+							"    pm.expect(jsonData.id).to.eql(objectId);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{objectId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{objectId}}"
 					]
 				}
 			},
