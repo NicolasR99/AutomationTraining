@@ -36,16 +36,62 @@
 		},
 		{
 			"name": "Get a Single Object",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test to validate the response status code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test to verify the details of the object with ID \"7\"\r",
+							"pm.test(\"Response contains the object with ID {{ObjectId}}\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    \r",
+							"    // Expected values\r",
+							"    var expectedName = \"Apple MacBook Pro 16\";\r",
+							"    var expectedYear = 2019;\r",
+							"    var expectedPrice = 1849.99;\r",
+							"    var expectedCPUModel = \"Intel Core i9\";\r",
+							"    var expectedHardDiskSize = \"1 TB\";\r",
+							"    \r",
+							"    // Validate the object properties\r",
+							"    pm.expect(jsonData.id).to.eql(\"7\"); // Replace with the actual ObjectId if not dynamic\r",
+							"    pm.expect(jsonData.name).to.eql(expectedName);\r",
+							"    pm.expect(jsonData.data.year).to.eql(expectedYear);\r",
+							"    pm.expect(jsonData.data.price).to.eql(expectedPrice);\r",
+							"    pm.expect(jsonData.data[\"CPU model\"]).to.eql(expectedCPUModel);\r",
+							"    pm.expect(jsonData.data[\"Hard disk size\"]).to.eql(expectedHardDiskSize);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/ff80818191fb642f0191fb932be5013d,.",
+					"raw": "{{baseUrl}}/7",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"ff80818191fb642f0191fb932be5013d,."
+						"7"
 					]
 				}
 			},
