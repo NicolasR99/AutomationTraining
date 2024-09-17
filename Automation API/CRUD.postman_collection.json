@@ -352,13 +352,72 @@
 			"response": []
 		},
 		{
-			"name": "New Request Copy",
+			"name": "Patch a Single Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get the object ID from the environment variable\r",
+							"var expectedId = pm.environment.get(\"objectId\");\r",
+							"\r",
+							"// Test to validate the response status code is 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test to verify the response contains the correct updated properties (name updated, others unchanged)\r",
+							"pm.test(\"Response contains the correct updated object properties\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Expected values\r",
+							"    var updatedName = \"Apple MacBook Pro 16 (Updated Name)\";\r",
+							"    var expectedYear = 2019;\r",
+							"    var expectedPrice = 2049.99;\r",
+							"    var expectedCPUModel = \"Intel Core i9\";\r",
+							"    var expectedHardDiskSize = \"1 TB\";\r",
+							"\r",
+							"    // Validate the ID and updated name in the response\r",
+							"    pm.expect(jsonData.id).to.eql(expectedId);\r",
+							"    pm.expect(jsonData.name).to.eql(updatedName);\r",
+							"\r",
+							"    // Validate unchanged properties\r",
+							"    pm.expect(jsonData.data.year).to.eql(expectedYear);\r",
+							"    pm.expect(jsonData.data.price).to.eql(expectedPrice);\r",
+							"    pm.expect(jsonData.data[\"CPU model\"]).to.eql(expectedCPUModel);\r",
+							"    pm.expect(jsonData.data[\"Hard disk size\"]).to.eql(expectedHardDiskSize);\r",
+							"});\r",
+							"\r",
+							"// Test to verify that the response contains the updatedAt timestamp\r",
+							"pm.test(\"Response contains updatedAt timestamp\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Validate that updatedAt is present\r",
+							"    pm.expect(jsonData).to.have.property('updatedAt');\r",
+							"\r",
+							"    // Adjusted regex to match timestamps with time zone offsets (e.g., +00:00) or Z\r",
+							"    var timestampRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(.\\d{3})?([+-]\\d{2}:\\d{2}|Z)$/;\r",
+							"    pm.expect(jsonData.updatedAt).to.match(timestampRegex);\r",
+							"});\r",
+							"\r",
+							"// Test to ensure that the response does not contain any errors\r",
+							"pm.test(\"Response does not contain errors\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.not.have.property('errors');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n   \"name\": \"{{$randomProductName}}\"\r\n}",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 16 (Updated Name)\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -366,16 +425,82 @@
 					}
 				},
 				"url": {
-					"raw": "https://api.restful-api.dev/objects/ff80818191fb642f0191fb932be5013d",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/{{objectId}}",
 					"host": [
-						"api",
-						"restful-api",
-						"dev"
+						"{{baseUrl}}"
 					],
 					"path": [
-						"objects",
-						"ff80818191fb642f0191fb932be5013d"
+						"{{objectId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Single Object Copy 3",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test to validate the response status code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test to verify that the response contains the correct object properties\r",
+							"pm.test(\"Response contains the correct object properties\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    // Expected values (match the POST request body)\r",
+							"    var expectedName = \"Apple MacBook Pro 16 (Updated Name)\";\r",
+							"    var expectedYear = 2019;\r",
+							"    var expectedPrice = 2049.99;\r",
+							"    var expectedCPUModel = \"Intel Core i9\";\r",
+							"    var expectedHardDiskSize = \"1 TB\";\r",
+							"\r",
+							"    // Validate the object properties\r",
+							"    pm.expect(jsonData.name).to.eql(expectedName);\r",
+							"    pm.expect(jsonData.data.year).to.eql(expectedYear);\r",
+							"    pm.expect(jsonData.data.price).to.eql(expectedPrice);\r",
+							"    pm.expect(jsonData.data[\"CPU model\"]).to.eql(expectedCPUModel);\r",
+							"    pm.expect(jsonData.data[\"Hard disk size\"]).to.eql(expectedHardDiskSize);\r",
+							"});\r",
+							"\r",
+							"// Test to ensure the ID matches the created object\r",
+							"pm.test(\"The retrieved object ID matches the saved objectId\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var objectId = pm.environment.get(\"objectId\");\r",
+							"\r",
+							"    pm.expect(jsonData.id).to.eql(objectId);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{objectId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{objectId}}"
 					]
 				}
 			},
