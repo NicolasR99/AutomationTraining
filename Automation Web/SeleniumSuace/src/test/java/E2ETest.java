@@ -75,5 +75,19 @@ public class E2ETest {
 
         cartPage.clickCheckoutButton();
     }
+    @Test(priority = 4, description = "Enter checkout information")
+    @Description("Test Description: Enter the user information for checkout")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Checkout")
+    public void testCheckoutFirstPart() {
+        Assert.assertTrue(driver.findElement(checkoutFirstPage.firstNameField).isDisplayed(), "First Name field present");
+        Assert.assertTrue(driver.findElement(checkoutFirstPage.lastNameField).isDisplayed(), "Last Name field present");
+        Assert.assertTrue(driver.findElement(checkoutFirstPage.postalCodeField).isDisplayed(), "Postal Code field present");
+        Assert.assertTrue(driver.findElement(checkoutFirstPage.continueButton).isEnabled(), "Continue button enabled");
+        Assert.assertEquals(checkoutFirstPage.getSecondTittle(),"Checkout: Your Information", "Page title is not correct");
+        checkoutFirstPage.fillCheckoutInformation(TestData.firstName, TestData.lastName, TestData.postalCode);
 
+        Assert.assertTrue(driver.findElement(checkoutFirstPage.continueButton).isEnabled(), "Finish button not enabled");
+        checkoutFirstPage.clickContinueButton();
+    }
 }
