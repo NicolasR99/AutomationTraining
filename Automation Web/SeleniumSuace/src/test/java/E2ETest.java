@@ -55,5 +55,25 @@ public class E2ETest {
         waitUtils = new WaitUtils(driver, 2);
         sideBar = new SideBar(driver);
     }
+    @Test(priority = 3, description = "Review cart")
+    @Description("Test Description: Review the cart items and proceed to checkout")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Review Cart")
+    public void testReviewCart() {
+        Assert.assertEquals(cartPage.getSecondTitle(), "Your Cart", "Page title is not correct");
+
+        // This code is for the first and the last item
+        // Match the name items
+        List<WebElement> cartItems = driver.findElements(cartPage.cartItemNames);
+        Assert.assertEquals(cartItems.get(0).getText(), firstItemName, "First item name is not correct");
+        Assert.assertEquals(cartItems.get(1).getText(), lastItemName, "Last item name is not correct");
+
+        // Match the price items
+        List<WebElement> cartItemPrices = driver.findElements(cartPage.cartItemPrices);
+        Assert.assertEquals(cartItemPrices.get(0).getText(), firstItemPrice, "First item price is not correct");
+        Assert.assertEquals(cartItemPrices.get(1).getText(), lastItemPrice, "Last item price is not correct");
+
+        cartPage.clickCheckoutButton();
+    }
 
 }
