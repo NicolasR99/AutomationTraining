@@ -90,4 +90,38 @@ public class E2ETest {
         Assert.assertTrue(driver.findElement(checkoutFirstPage.continueButton).isEnabled(), "Finish button not enabled");
         checkoutFirstPage.clickContinueButton();
     }
+    @Test(priority = 5, description = "Review order summary")
+    @Description("Test Description: Review the order summary and confirm the prices")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Order Summary")
+    public void testCheckoutSecondPart() {
+
+        Assert.assertEquals(checkoutSecondPage.getSecondTittle(),"Checkout: Overview", "Page title is not correct");
+        // Match the name items
+        List<WebElement> cartItems = driver.findElements(checkoutSecondPage.cartItemNames);
+        Assert.assertEquals(cartItems.get(0).getText(), firstItemName, "First item name is not correct");
+        Assert.assertEquals(cartItems.get(1).getText(), lastItemName, "Last item name is not correct");
+
+        // Match the price items
+        List<WebElement> cartItemPrices = driver.findElements(checkoutSecondPage.cartItemPrices);
+        Assert.assertEquals(cartItemPrices.get(0).getText(), firstItemPrice, "First item price is not correct");
+        Assert.assertEquals(cartItemPrices.get(1).getText(), lastItemPrice, "Last item price is not correct");
+
+        // Obtain the total price displayed on the page
+        String totalPriceActualText = driver.findElement(checkoutSecondPage.subTotal).getText();
+
+        // Extract only the numeric value from the total price
+        String totalPriceActualValue = totalPriceActualText.replace("Item total: ", "");
+        double totalPriceActualDouble = Double.parseDouble(totalPriceActualValue.replace("$", ""));
+
+        // Calculate the expected total price
+        double price1 = Double.parseDouble(firstItemPrice.replace("$", ""));
+        double price2 = Double.parseDouble(lastItemPrice.replace("$", ""));
+        double totalPriceExpected = price1 + price2;
+
+        // Verify that the calculated total price matches the displayed total price
+        Assert.assertEquals(totalPriceActualDouble, totalPriceExpected, "Total price does not match the sum of item prices");
+
+        checkoutSecondPage.clickFinishButton();
+    }
 }
