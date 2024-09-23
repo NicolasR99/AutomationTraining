@@ -124,4 +124,15 @@ public class E2ETest {
 
         checkoutSecondPage.clickFinishButton();
     }
+    @Test(priority = 6, description = "Confirm order")
+    @Description("Test Description: Confirm the order and verify the confirmation message")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Order Confirmation")
+    public void testConfirmation() {
+        // Step 6: Order Confirmation
+        Assert.assertEquals(checkoutCompletePage.getConfirmationMessage(),"Thank you for your order!", "Confirmation message is not correct");
+
+        Assert.assertTrue(driver.findElement(checkoutCompletePage.backHomeButton).isEnabled(), "Back Home button not enabled");
+        checkoutCompletePage.clickBackToProducts();
+    }
 }
